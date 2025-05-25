@@ -1,4 +1,4 @@
-
+#registo_diario_25
 import os
 import json
 from datetime import datetime
@@ -24,6 +24,14 @@ sheet = build('sheets', 'v4', credentials=creds)
 
 def idx(headers, nome):
     return headers.index(nome)
+
+def parse_data_hora(data_str):
+    for fmt in ("%d-%m-%Y %H:%M", "%d/%m/%Y %H:%M", "%d/%m/%Y %H:%M:%S"):
+        try:
+            return datetime.strptime(data_str, fmt)
+        except ValueError:
+            continue
+    raise ValueError(f"Formato inválido de data/hora: {data_str}")
 
 def registar_eventos_diarios():
     print("📥 A registar eventos diários...")
@@ -68,7 +76,7 @@ def registar_eventos_diarios():
 
         # Verifica se a data do evento é de hoje
         try:
-            data_dt = datetime.strptime(data_hora_str, "%d-%m-%Y %H:%M").date()
+            data_dt = parse_data_hora(data_hora_str).date()
         except:
             continue
 
