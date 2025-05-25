@@ -98,7 +98,11 @@ def register_handlers_adesao(dp: Dispatcher):
 
         nova_linha = [
             "SemNome", "semPass", user.get("email", ""), user.get("ref_extra", ""),
-            "sem Plano", user.get("vpn_escolhida", ""), "4us/platinum", "atualizar",
+            "sem Plano",
+            user.get("vpn_escolhida", ""),
+            "platinum" if user.get("vpn_valor", 0) > 0 else "",
+            "atualizar",
+
             None, "", user.get("plano_escolhido", ""), f"{user.get('valor_total', '')}€",
             agora, "AGUARDA_COMPROVATIVO", "", "", str(callback_query.from_user.id)
         ]
@@ -192,6 +196,8 @@ def register_handlers_adesao(dp: Dispatcher):
             idx_estado = headers.index("estado_do_pedido")
             idx_comprovativo = headers.index("comprovativo")
 
+
+
             for i, row in enumerate(rows, start=2):
                 if len(row) > idx_ref and row[idx_ref].strip().lower() == ref_extra:
                     sheet_service.spreadsheets().values().update(
@@ -201,6 +207,15 @@ def register_handlers_adesao(dp: Dispatcher):
                         body={"values": [["PAGO"]]}
                     ).execute()
 
+                    # Atualizar a data/hora (coluna M)
+                    idx_data_hora = headers.index("data_hora")
+                    sheet_service.spreadsheets().values().update(
+                        spreadsheetId=SPREADSHEET_ID,
+                        range=f"{SHEET_CLIENTES}!{chr(65+idx_data_hora)}{i}",
+                        valueInputOption="RAW",
+                        body={"values": [[user["data_hora"]]]}
+                    ).execute()
+
                     sheet_service.spreadsheets().values().update(
                         spreadsheetId=SPREADSHEET_ID,
                         range=f"{SHEET_CLIENTES}!{chr(65+idx_comprovativo)}{i}",
@@ -208,6 +223,12 @@ def register_handlers_adesao(dp: Dispatcher):
                         body={"values": [[link]]}
                     ).execute()
 
+                    # Preparar dados para a notificação
+                    user["username"] = "adesao_" + nome_ref
+                    user["total"] = f"{user.get('valor_total', 0)}€"
+                    user["data_hora"] = datetime.now().strftime("%d-%m-%Y %H:%M")
+                    user["estado_do_pedido"] = "PAGO"
+                    user["telegram_id"] = message.from_user.id
                     try:
                         await enviar_notificacao("Nova Adesão", user, link)
                     except Exception as e:

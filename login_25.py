@@ -259,7 +259,7 @@ def register_handlers_login(dp: Dispatcher):
         user = user_data[callback_query.from_user.id]
         user["data_hora"] = datetime.now().strftime("%d-%m-%Y %H:%M")
         user["estado_do_pedido"] = "AGUARDA_COMPROVATIVO"
-        user["conta_vpn"] = "4us/platinum"
+        user["conta_vpn"] = "platinum" if user.get("vpn_valor", 0) > 0 else ""
         user["etapa"] = "comprovativo_renovacao"
 
         sheet = sheet_service.spreadsheets().values().get(
@@ -401,6 +401,16 @@ def register_handlers_login(dp: Dispatcher):
                     valueInputOption="RAW",
                     body={"values": [[link]]}
                 ).execute()
+
+                # Atualizar a data/hora (coluna M)
+                idx_data_hora = headers.index("data_hora")
+                sheet_service.spreadsheets().values().update(
+                    spreadsheetId=SPREADSHEET_ID,
+                    range=f"{SHEET_CLIENTES}!{chr(65+idx_data_hora)}{i}",
+                    valueInputOption="RAW",
+                    body={"values": [[user["data_hora"]]]}
+                ).execute()
+
 
                 # Tentar enviar notificação ao grupo
                 print("telegram_id:", user.get("telegram_id"))
