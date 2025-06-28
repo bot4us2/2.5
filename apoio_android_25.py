@@ -324,3 +324,13 @@ async def menu_apoio_handler(message: Message):
     ])
     await message.answer("🛠 Qual destes dispositivos usas?", reply_markup=kb)
 
+def register_handlers_apoio_android(dp):
+    # Regista os handlers relevantes
+    dp.callback_query.register(apoio_android, lambda c: c.data == "apoio_android")
+    dp.callback_query.register(apoio_apple, lambda c: c.data == "apoio_apple")
+    dp.callback_query.register(procedimento_v7, lambda c: c.data == "instalar_v7")
+    dp.callback_query.register(procedimento_v6, lambda c: c.data == "instalar_v6")
+    dp.callback_query.register(procedimento_v2, lambda c: c.data == "instalar_v2")
+    dp.callback_query.register(procedimento_purple, lambda c: c.data == "instalar_purple")
+    dp.callback_query.register(procedimento_vpn, lambda c: c.data == "instalar_vpn")
+    dp.message.register(menu_apoio_handler, lambda msg: msg.text and "apoio" in msg.text.lower())
