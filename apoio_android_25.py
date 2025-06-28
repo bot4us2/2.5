@@ -1,68 +1,58 @@
 from aiogram import types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.dispatcher import Dispatcher
 from config_25 import user_data
 
-# --- Teclado com as opções de apoio técnico ---
-def teclado_apoio():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="\ud83d\udcf1 Android", callback_data="apoio_android")],
-        [InlineKeyboardButton(text="\ud83d\udcbb Windows", callback_data="apoio_windows")],
-        [InlineKeyboardButton(text="\ud83c\udf4f iPhone/Mac", callback_data="apoio_apple")],
-        [InlineKeyboardButton(text="\ud83d\udcfa Smart TV", callback_data="apoio_tv")],
-        [InlineKeyboardButton(text="\ud83d\udcac Apoio via Chat", url="https://t.me/hhcihs")]
-    ])
+def register_handlers_apoio_android(dp: Dispatcher):
 
-def register_handlers_apoio_android(dp):
-
-    @dp.callback_query(lambda c: c.data == "apoio_android")
     async def apoio_android(callback_query: types.CallbackQuery):
         await callback_query.message.answer(
-            "\ud83d\udcf2 <b>Apps compat\u00edveis com Android</b>:\n\n"
-            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeam-7.0-v1001-1006-vpn.apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            "📲 <b>Apps compatíveis com Android</b>:\n\n"
+            "🔸 https://platinum-apk.com/PlatinumTeam-7.0-v1001-1006-vpn.apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="\ud83d\udcf2 V7 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v7")]
+                [InlineKeyboardButton(text="📲 V7 – Instalação com os meus dados", callback_data="instalar_v7")]
             ])
         )
 
         await callback_query.message.answer(
-            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeam-6.0-v801.apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            "🔸 https://platinum-apk.com/PlatinumTeam-6.0-v801.apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="\ud83d\udcf2 V6 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v6")]
+                [InlineKeyboardButton(text="📲 V6 – Instalação com os meus dados", callback_data="instalar_v6")]
             ])
         )
 
         await callback_query.message.answer(
-            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeamV2.apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            "🔸 https://platinum-apk.com/PlatinumTeamV2.apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="\ud83d\udcf2 V2 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v2")]
+                [InlineKeyboardButton(text="📲 V2 – Instalação com os meus dados", callback_data="instalar_v2")]
             ])
         )
 
         await callback_query.message.answer(
-            "\ud83d\udd38 https://platinum-apk.com/PurplePLATINUMTEAM.apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            "🔸 https://platinum-apk.com/PurplePLATINUMTEAM.apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="\ud83d\udcf2 Purple – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_purple")]
+                [InlineKeyboardButton(text="📲 Purple – Instalação com os meus dados", callback_data="instalar_purple")]
             ])
         )
 
         await callback_query.message.answer(
-            "\ud83d\udd38 https://platinum-apk.com/PlatinumGuardianVPN(3.0).apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            "🔸 https://platinum-apk.com/PlatinumGuardianVPN(3.0).apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="\ud83d\udcf2 VPN – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_vpn")]
+                [InlineKeyboardButton(text="📲 VPN – Instalação com os meus dados", callback_data="instalar_vpn")]
             ])
         )
 
         await callback_query.message.answer(
-            "\ud83d\udd38 https://platinum-apk.com/smarters4-0.apk\n"
-            "\ud83d\udd38 https://platinum-apk.com/mytvonline+.apk\n"
-            "\ud83d\udd11 Password: <code>PLATINUM2030</code>"
+            "🔸 https://platinum-apk.com/smarters4-0.apk\n"
+            "🔸 https://platinum-apk.com/mytvonline+.apk\n"
+            "🔑 Password: <code>PLATINUM2030</code>"
         )
-
+        
 @dp.callback_query(lambda c: c.data == "apoio_apple")
 async def apoio_apple(callback_query: types.CallbackQuery):
     await callback_query.message.answer(
