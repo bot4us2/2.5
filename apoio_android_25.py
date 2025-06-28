@@ -1,93 +1,67 @@
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from config_25 import dp, user_data  # <-- adaptado para nova versão
-
-# --- Função auxiliar para verificar login ---
-def login_obrigatorio(handler):
-    async def wrapper(callback_query):
-        dados = user_data.get(callback_query.from_user.id)
-        if not dados or not dados.get("username"):
-            await callback_query.message.answer("⚠️ Faz login primeiro para ver os teus dados.")
-            return
-        return await handler(callback_query, dados)
-    return wrapper
+from config_25 import user_data
 
 # --- Teclado com as opções de apoio técnico ---
 def teclado_apoio():
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📱 Android", callback_data="apoio_android")],
-        [InlineKeyboardButton(text="💻 Windows", callback_data="apoio_windows")],
-        [InlineKeyboardButton(text="🍏 iPhone/Mac", callback_data="apoio_apple")],
-        [InlineKeyboardButton(text="📺 Smart TV", callback_data="apoio_tv")],
-        [InlineKeyboardButton(text="💬 Apoio via Chat", url="https://t.me/hhcihs")]
+        [InlineKeyboardButton(text="\ud83d\udcf1 Android", callback_data="apoio_android")],
+        [InlineKeyboardButton(text="\ud83d\udcbb Windows", callback_data="apoio_windows")],
+        [InlineKeyboardButton(text="\ud83c\udf4f iPhone/Mac", callback_data="apoio_apple")],
+        [InlineKeyboardButton(text="\ud83d\udcfa Smart TV", callback_data="apoio_tv")],
+        [InlineKeyboardButton(text="\ud83d\udcac Apoio via Chat", url="https://t.me/hhcihs")]
     ])
 
-# --- Comando "apoio" pelo botão do bot ---
-@dp.callback_query(lambda c: c.data == "apoio")
-async def apoio_tecnico_callback(callback_query: types.CallbackQuery):
-    dados = user_data.get(callback_query.from_user.id)
-    if not dados or not dados.get("username"):
-        await callback_query.message.answer("⚠️ Para aceder ao apoio técnico precisas de fazer Log In primeiro.")
-        return
-    await callback_query.message.answer("🛠 Qual destes dispositivos usas?", reply_markup=teclado_apoio())
+def register_handlers_apoio_android(dp):
 
-# --- Comando "apoio" por mensagem escrita ---
-@dp.message(lambda msg: msg.text and "apoio" in msg.text.lower())
-async def menu_apoio_handler(message: Message):
-    dados = user_data.get(message.from_user.id)
-    if not dados or not dados.get("username"):
-        await message.answer("⚠️ Para aceder ao apoio técnico precisas de fazer Log In primeiro.")
-        return
-    await message.answer("🛠 Qual destes dispositivos usas?", reply_markup=teclado_apoio())
+    @dp.callback_query(lambda c: c.data == "apoio_android")
+    async def apoio_android(callback_query: types.CallbackQuery):
+        await callback_query.message.answer(
+            "\ud83d\udcf2 <b>Apps compat\u00edveis com Android</b>:\n\n"
+            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeam-7.0-v1001-1006-vpn.apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="\ud83d\udcf2 V7 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v7")]
+            ])
+        )
 
-# --- Android ---
-@dp.callback_query(lambda c: c.data == "apoio_android")
-async def apoio_android(callback_query: types.CallbackQuery):
-    await callback_query.message.answer(
-        "📲 <b>Apps compatíveis com Android</b>:\n\n"
-        "🔸 https://platinum-apk.com/PlatinumTeam-7.0-v1001-1006-vpn.apk\n"
-        "🔑 A password de acesso é: <code>PLATINUM2030</code>",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📲 V7 – Instalação com os meus dados", callback_data="instalar_v7")]
-        ])
-    )
+        await callback_query.message.answer(
+            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeam-6.0-v801.apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="\ud83d\udcf2 V6 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v6")]
+            ])
+        )
 
-    await callback_query.message.answer(
-        "🔸 https://platinum-apk.com/PlatinumTeam-6.0-v801.apk\n"
-        "🔑 A password de acesso é: <code>PLATINUM2030</code>",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📲 V6 – Instalação com os meus dados", callback_data="instalar_v6")]
-        ])
-    )
+        await callback_query.message.answer(
+            "\ud83d\udd38 https://platinum-apk.com/PlatinumTeamV2.apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="\ud83d\udcf2 V2 – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_v2")]
+            ])
+        )
 
-    await callback_query.message.answer(
-        "🔸 https://platinum-apk.com/PlatinumTeamV2.apk\n"
-        "🔑 A password de acesso é: <code>PLATINUM2030</code>",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📲 V2 – Instalação com os meus dados", callback_data="instalar_v2")]
-        ])
-    )
-    
-    await callback_query.message.answer(
-    "🔸 https://platinum-apk.com/PurplePLATINUMTEAM.apk\n"
-    "🔑 A password de acesso é: <code>PLATINUM2030</code>",
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📲 Purple – Instalação com os meus dados", callback_data="instalar_purple")]
-        ])
-    )
-    await callback_query.message.answer(
-    "🔸 https://platinum-apk.com/PlatinumGuardianVPN(3.0).apk\n"
-    "🔑 A password de acesso é: <code>PLATINUM2030</code>",
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📲 VPN – Instalação com os meus dados", callback_data="instalar_vpn")]
-        ])
-    )
+        await callback_query.message.answer(
+            "\ud83d\udd38 https://platinum-apk.com/PurplePLATINUMTEAM.apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="\ud83d\udcf2 Purple – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_purple")]
+            ])
+        )
 
-    await callback_query.message.answer(
-        "🔸 https://platinum-apk.com/smarters4-0.apk\n"
-        "🔸 https://platinum-apk.com/mytvonline+.apk\n"
-        "🔑 A password de acesso é: <code>PLATINUM2030</code>"
-    )
+        await callback_query.message.answer(
+            "\ud83d\udd38 https://platinum-apk.com/PlatinumGuardianVPN(3.0).apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="\ud83d\udcf2 VPN – Instala\u00e7\u00e3o com os meus dados", callback_data="instalar_vpn")]
+            ])
+        )
+
+        await callback_query.message.answer(
+            "\ud83d\udd38 https://platinum-apk.com/smarters4-0.apk\n"
+            "\ud83d\udd38 https://platinum-apk.com/mytvonline+.apk\n"
+            "\ud83d\udd11 Password: <code>PLATINUM2030</code>"
+        )
 
 @dp.callback_query(lambda c: c.data == "apoio_apple")
 async def apoio_apple(callback_query: types.CallbackQuery):
