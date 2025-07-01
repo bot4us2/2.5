@@ -218,7 +218,16 @@ def register_handlers_login(dp: Dispatcher):
             await callback_query.message.answer("❌ Plano inválido. Tenta novamente.")
             return
 
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
+
         user["plano_novo"] = plano_nome
         user["plano_valor"] = plano_valor
 
@@ -237,7 +246,16 @@ def register_handlers_login(dp: Dispatcher):
             "vpn0_r": ("Sem VPN", 0.0)
         }
         vpn_nome, vpn_valor = vpn_opcoes[callback_query.data]
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
+
         total = round((user["plano_valor"] + vpn_valor) * 1.025, 2)
 
         user["vpn"] = vpn_nome
@@ -256,7 +274,16 @@ def register_handlers_login(dp: Dispatcher):
 
     @dp.callback_query(lambda c: c.data == "confirmar_renovacao")
     async def gerar_referencia_renovacao(callback_query: types.CallbackQuery):
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
+
         user["data_hora"] = datetime.now().strftime("%d-%m-%Y %H:%M")
         user["estado_do_pedido"] = "AGUARDA_COMPROVATIVO"
         user["conta_vpn"] = "platinum" if user.get("vpn_valor", 0) > 0 else ""

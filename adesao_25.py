@@ -54,7 +54,15 @@ def register_handlers_adesao(dp: Dispatcher):
             "plano_full_12": ("Plano Full 12 Meses", 61.25)
         }
         plano_nome, plano_valor = planos[callback_query.data]
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
         user["plano_escolhido"] = plano_nome
         user["plano_valor"] = plano_valor
 
@@ -72,7 +80,15 @@ def register_handlers_adesao(dp: Dispatcher):
             "vpn_12": ("VPN 12 Meses", 10.0),
             "vpn_0": ("Sem VPN", 0.0)
         }
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
         vpn_nome, vpn_valor = vpn_opcoes[callback_query.data]
         total = round((user["plano_valor"] + vpn_valor) * 1.025, 2)
 
@@ -93,7 +109,15 @@ def register_handlers_adesao(dp: Dispatcher):
 
     @dp.callback_query(lambda c: c.data == "pagar_adesao")
     async def registar_adesao(callback_query: types.CallbackQuery):
-        user = user_data[callback_query.from_user.id]
+        user_id = callback_query.from_user.id
+
+        if user_id not in user_data:
+            await callback_query.message.answer(
+                "⚠️ A sessão expirou ou ocorreu um erro. Por favor, volta a iniciar o processo."
+            )
+            return
+
+        user = user_data[user_id]
         agora = datetime.now().strftime("%d-%m-%Y %H:%M")
 
         nova_linha = [
@@ -109,7 +133,7 @@ def register_handlers_adesao(dp: Dispatcher):
 
         sheet_service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=SHEET_CLIENTES,
+            range=f"{SHEET_CLIENTES}!A3:P3",
             valueInputOption="RAW",
             insertDataOption="INSERT_ROWS",
             body={"values": [nova_linha]}
