@@ -109,11 +109,12 @@ def register_handlers_adesao(dp: Dispatcher):
 
         sheet_service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=SHEET_CLIENTES,
+            range=f"{SHEET_CLIENTES}!A3",  # 👈 começa sempre em A3
             valueInputOption="RAW",
-            insertDataOption="INSERT_ROWS",
+            insertDataOption="INSERT_ROWS",  # 👈 empurra as linhas para baixo
             body={"values": [nova_linha]}
         ).execute()
+
 
         texto_pagamento = (
             f"<b>📌 Dados para pagamento:</b>\n"
