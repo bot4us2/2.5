@@ -96,36 +96,23 @@ def register_handlers_adesao(dp: Dispatcher):
         user = user_data[callback_query.from_user.id]
         agora = datetime.now().strftime("%d-%m-%Y %H:%M")
 
-        # Prepara a linha completa com base no mapa_colunas
-        linha = [""] * len(mapa_colunas)
-        pos = list(mapa_colunas.keys())
+        nova_linha = [
+            "SemNome", "semPass", user.get("email", ""), user.get("ref_extra", ""),
+            "sem Plano",
+            user.get("vpn_escolhida", ""),
+            "platinum" if user.get("vpn_valor", 0) > 0 else "",
+            "atualizar",
 
-        valores = {
-            "username": "SemNome",
-            "password": "semPass",
-            "email": user.get("email", ""),
-            "ref_extra": user.get("ref_extra", ""),
-            "plano": "sem Plano",
-            "vpn": user.get("vpn_escolhida", ""),
-            "conta_vpn": "platinum" if user.get("vpn_valor", 0) > 0 else "",
-            "expira_em": "atualizar",
-            "plano_novo": user.get("plano_escolhido", ""),
-            "total": f"{user.get('valor_total', '')}€",
-            "data_hora": agora,
-            "estado_do_pedido": "AGUARDA_COMPROVATIVO",
-            "telegram_id": str(callback_query.from_user.id),
-        }
-
-        for k, v in valores.items():
-            if k in pos:
-                linha[pos.index(k)] = v
+            None, "", user.get("plano_escolhido", ""), f"{user.get('valor_total', '')}€",
+            agora, "AGUARDA_COMPROVATIVO", "", "", str(callback_query.from_user.id)
+        ]
 
         sheet_service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_CLIENTES}!A3",  # começa sempre na linha 3
+            range=SHEET_CLIENTES,
             valueInputOption="RAW",
-            insertDataOption="INSERT_ROWS",  # empurra as linhas para baixo
-            body={"values": [linha]}
+            insertDataOption="INSERT_ROWS",
+            body={"values": [nova_linha]}
         ).execute()
 
         texto_pagamento = (
@@ -142,7 +129,6 @@ def register_handlers_adesao(dp: Dispatcher):
         ])
 
         await callback_query.message.answer(texto_pagamento, reply_markup=kb, parse_mode="HTML")
-
 
     @dp.callback_query(lambda c: c.data == "comprovativo")
     async def pedir_comprovativo(callback_query: types.CallbackQuery):
