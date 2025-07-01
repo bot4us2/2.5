@@ -103,7 +103,7 @@ def register_handlers_adesao(dp: Dispatcher):
             "platinum" if user.get("vpn_valor", 0) > 0 else "",
             "atualizar",
 
-            None, "", user.get("plano_escolhido", ""), f"{user.get('valor_total', '')}€",
+            "", "", user.get("plano_escolhido", ""), f"{user.get('valor_total', '')}€",
             agora, "AGUARDA_COMPROVATIVO", "", "", str(callback_query.from_user.id)
         ]
 
